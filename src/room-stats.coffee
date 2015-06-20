@@ -14,9 +14,26 @@
 # Author:
 #   Sandy <amwelch@umich.edu>
 
-module.exports = (robot) ->
-  robot.respond /hello/, (msg) ->
-    msg.reply "hello!"
+python_shell = require("python-shell")
 
-  robot.hear /orly/, ->
+module.exports = (robot) ->
+  robot.hear /stats/, (msg) ->
+    msg.reply "hello!"
+    console.log(python_shell)
+    options = 
+      args: [
+        '--token'  
+        'HIPCHAT TOKEN HERE'
+        '--room' 
+        'ROOM NAME HERE'
+      ]
+      scriptPath: "#{__dirname}/python"
+    python_shell.run('readroom.py', options, (err, results) ->
+      if err 
+        console.log(err)
+        throw err
+      console.log(results)
+      res = JSON.parse(results)
+    )
+  robot.hear /orly/, (msg)->
     msg.send "yarly"
